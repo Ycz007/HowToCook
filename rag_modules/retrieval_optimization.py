@@ -66,9 +66,42 @@ class  RetrievalOptimizationModule:
         return reranked_docs[:top_k]
 
 
+    def metadata_filtered_search(self, query: str, filters: Dict[str, Any],top_k: int = 5) -> List[Document]:
+        """
+        带元数据过滤的检索
 
+        Args:
+            query: 查询文本
+            filters: 元数据过滤条件
+            top_k: 返回结果数量
 
+        Returns:
+            过滤后的文档列表
+        """
+        # 先进性混合检索，获取更多候选
+        docs = self.hybrid_search(query, top_k * 3)
 
+        #应用元数据过滤
+        filtered_docs = []
+        for doc in docs:
+            match = True
+            for key,value in filters.items():
+                if key in doc.metadata:
+                    if isinstance(value, list):
+                        if doc.metadata[key] not in value:
+                            match = False
+                            break
+                    else:
+                        if doc.metadata[key] != value:
+                            match = False
+                            break
+
+            if match:
+                filtered_docs.append(doc)
+                if len(filtered_docs) >= top_k:
+                    break
+
+        return filtered_docs
 
 
     def _rrf_rerank(self, vector_docs: List[Document], bm25_docs: List[Document], k: int = 60) -> List[Document]:

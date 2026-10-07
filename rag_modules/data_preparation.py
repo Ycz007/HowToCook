@@ -181,7 +181,7 @@ class DataPreparationModule:
                     logger.warning(f"文档 {doc.metadata.get('dish_name', '未知')} 未能按标题分割，可能缺少标题结构")
 
                 # 为每个子块建立与夫文档的关系
-                parent_id = doc.metadate['parent_id']
+                parent_id = doc.metadata['parent_id']
 
                 for i, chunk in enumerate(md_chunks):
                     #为子块分配唯一id
@@ -202,12 +202,12 @@ class DataPreparationModule:
                 all_chunks.extend(md_chunks)
 
             except Exception as e:
-                logger.warning(f"文档{doc.metadate.get('source','')} MarkDown分割失败")
+                logger.warning(f"文档{doc.metadata.get('source','')} MarkDown分割失败")
                 # 如果Markdown分割失败，将整个文档作为一个chunk
                 all_chunks.append(doc)
 
             logger.info(f"Markdown结构分割完成，生成 {len(all_chunks)} 个结构化块")
-            return all_chunks
+        return all_chunks
 
     def filter_documents_by_category(self, category: str) -> List[Document]:
         """
@@ -234,7 +234,7 @@ class DataPreparationModule:
         return [doc for doc in self.documents if doc.metadata.get('difficulty') == difficulty]
 
 
-    def get_statics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> Dict[str, Any]:
         """
         获取数据统计信息
 
