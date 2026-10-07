@@ -16,3 +16,6 @@ __pycache__/
 
 # 环境变量 / 密钥
 .env
+
+# RAG evaluation reports
+evaluation/reports/
